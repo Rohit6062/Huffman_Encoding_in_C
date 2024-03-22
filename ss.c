@@ -1,12 +1,15 @@
 #include<stdio.h>
-#include<limits.h>
 #include<stdlib.h>
 typedef struct node{
-	int data;
-	struct node* right;
-	struct node* left;
-	int ascii;
+int data;
+struct node* right;
+struct node* left;
+int ascii;
 }node;
+
+void p(node* root){
+	printf("%d %p %p %d\n",root->data,root->left,root->right,root->ascii);
+}
 
 void initbst(node* root,int data,int ascii){
 	root->left = NULL;
@@ -22,30 +25,30 @@ void swapNode(node *a, node *b){
 	*b = temp;
 }
 
-void heapifyNode(node *a, int n, int i){
+void heapifyNode(node **a, int n, int i){
 	int smallest = i;
 	int left = 2*i + 1;
 	int right = 2*i + 2;
-	if(left < n && a[left].data < a[smallest].data){
+	if(left < n && a[left]->data < a[smallest]->data){
 		smallest = left;
 	}
-	if(right < n && a[right].data <a[smallest].data){
+	if(right < n && a[right]->data <a[smallest]->data){
 		smallest = right;
 	}
 	if(smallest != i){
-		swapNode(&a[smallest], &a[i]);
+		swapNode(a[smallest], a[i]);
 		heapifyNode(a, n, smallest);
 	}
 }
 
-void heapNode(node *a, int n){
+void heapNode(node **a, int n){
 	printf("In HeapNode function widt %d \n",n);
 	int j = n - 1;
 	for(int i = n/2 - 1; i >=0; i--){
 		heapifyNode(a, n, i);
 	}
 	if(j>=0){
-	swapNode(&a[0], &a[j]);
+	swapNode(a[0], a[j]);
 	heapifyNode(a, j, 0);
 	printf("Removed Item : %d\n", a[j]);
 	}
@@ -71,28 +74,35 @@ void traverseTree(node *root)
 
 }
 
-int main(){
-    int map[10][2]={ {97,10},{98,101},{99,11},{100,102},{103,9},{105,10},{107,101},{106,11},{109,102},{111,7}};	
-	int n=sizeof(map)/sizeof(map[0]);
-	printf("%d\n",n);
-	node sta[n];
-	int i=0;
 
-	// this will create node for every element in map;
+
+
+
+int main(){
+	int map[10][2]={ {97,10},{98,101},{99,11},{100,102},{103,9},{105,10},{107,101},{106,11},{109,102},{111,7}};	
+	int n=sizeof(map)/sizeof(map[0]);
+	node *sta[n];
+	int i=0;
 	while(i<n){
-		initbst(&sta[i],map[i][1],map[i][0]);
+		sta[i]=malloc(sizeof(node*));
+		sta[i]->data=map[i][1];
+		sta[i]->ascii = map[i][0];
+		sta[i]->left = NULL;
+		sta[i]->right = NULL;
 		i++;
 	}
-	i = 0;
+	i=0;
 	int k=n;
-	while(i < 0){
+	
+	/// this is for testing if our heafify is working properly or not
+	while(i < n){
 		heapNode(sta, k);
 		k--;
-		node *root = &sta[k];
+		node *root = sta[k];
 		printf("own %p left-> %p data-> %d right->%p ascii-> %d\n",root,root->left,root->data,root->right,root->ascii);
 		i++;
 	}
-	
+/*	
 	i=0;
 	k=n;
 	while(i<n){
@@ -112,7 +122,6 @@ int main(){
 	printf("own %p left-> %p data-> %d right->%p ascii-> %d\n",root,root->left,root->data,root->right,root->ascii);
 
 	//traverseTree(&sta[0]);
-
-return 0;
+*/
+	return 0;
 }
-

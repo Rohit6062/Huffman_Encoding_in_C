@@ -13,7 +13,7 @@ void initbst(node* root,int data,int ascii){
 	root->right = NULL;
 	root->data=data;
 	root->ascii=ascii;
-	printf("%d %d\n",root->data,root->ascii);
+	printf("Initiating Bst %d %d\n",root->data,root->ascii);
 }
 
 void swapNode(node *a, node *b){
@@ -93,10 +93,8 @@ int main(){
 		printf("own %p left-> %p data-> %d right->%p ascii-> %d\n",root,root->left,root->data,root->right,root->ascii);
 		i++;
 	}
-	
-	i=0;
-	k=n;
-	while(i<n){
+	k = n;
+	while(1){
 		if(k>1){
 			heapNode(sta, k);
 			heapNode(sta,k-1);
@@ -106,9 +104,7 @@ int main(){
 			tmp1=malloc(sizeof(node*));
 			tmp2=malloc(sizeof(node*));
 			*tmp1=sta[k-1];
-			tmp1->ascii=sta[k-1].ascii;
 			*tmp2=sta[k-2];
-			tmp2->ascii=sta[k-2].ascii;
 			combNode(tmp1,tmp2,&sta[k-2]);
 			k--;
 		}
@@ -116,9 +112,6 @@ int main(){
 			break;
 		}
 	}
-	node *root = &sta[0];	
-	printf("own %p left-> %p data-> %d right->%p ascii-> %d\n",root,root->left,root->data,root->right,root->ascii);
-	
 	printf("\n traversal Result\n");
 	traverseTree(&sta[0]);
 

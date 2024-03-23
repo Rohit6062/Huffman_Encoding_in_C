@@ -61,10 +61,11 @@ void combNode(node* left,node * right,node* tmp){
 void traverseTree(node *root)
 {
 	if(root==NULL)	return;
-	printf("left-> %p data-> %d right->%p ascii-> %d\n",root->left,root->data,root->right,root->ascii);
+	
 	if(root->left){
 		traverseTree(root->left);
 	}
+	printf("own %p left-> %p data-> %d right->%p ascii-> %d\n",root,root->left,root->data,root->right,root->ascii);
 	if(root->right){
 		traverseTree(root->right);
 	}
@@ -99,9 +100,16 @@ int main(){
 		if(k>1){
 			heapNode(sta, k);
 			heapNode(sta,k-1);
-			node temp;
-			combNode(&sta[k-1],&sta[k-2],&temp);
-			sta[k-2] = temp;
+			// as we are going to combine two nodes into a single node for that we will create two different nodes assign them vlaues of minimun and second minimum and then combine them into a 2nd minimum.
+			node *tmp1;
+			node *tmp2;
+			tmp1=malloc(sizeof(node*));
+			tmp2=malloc(sizeof(node*));
+			*tmp1=sta[k-1];
+			tmp1->ascii=sta[k-1].ascii;
+			*tmp2=sta[k-2];
+			tmp2->ascii=sta[k-2].ascii;
+			combNode(tmp1,tmp2,&sta[k-2]);
 			k--;
 		}
 		else{
@@ -110,8 +118,9 @@ int main(){
 	}
 	node *root = &sta[0];	
 	printf("own %p left-> %p data-> %d right->%p ascii-> %d\n",root,root->left,root->data,root->right,root->ascii);
-
-	//traverseTree(&sta[0]);
+	
+	printf("\n traversal Result\n");
+	traverseTree(&sta[0]);
 
 return 0;
 }

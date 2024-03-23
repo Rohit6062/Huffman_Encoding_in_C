@@ -7,12 +7,24 @@ typedef struct node{
 	struct node* left;
 	int ascii;
 }node;
+node *for9;
 
+node* createNode(){
+	node* n = (node*)malloc(sizeof(node));
+	n->data = 0;
+	n->right = NULL;
+	n->left = NULL;
+	n->ascii = -1;
+	return n;
+}
 void initbst(node* root,int data,int ascii){
 	root->left = NULL;
 	root->right = NULL;
 	root->data=data;
 	root->ascii=ascii;
+	printf("%p \t",root);
+	if(root -> data == 9)
+		for9=root;
 	printf("Initiating Bst %d %d\n",root->data,root->ascii);
 }
 
@@ -46,7 +58,7 @@ void heapNode(node *a, int n){
 	if(j>=0){
 	swapNode(&a[0], &a[j]);
 	heapifyNode(a, j, 0);
-	printf("Removed Item : %d\n", a[j]);
+	//printf("Removed Item : %d\n", a[j]);
 	}
 }	
 
@@ -79,16 +91,7 @@ int main(){
 		initbst(&sta[i],map[i][1],map[i][0]);
 		i++;
 	}
-	i = 0;
-	int k=n;
-	while(i < 0){
-		heapNode(sta, k);
-		k--;
-		node *root = &sta[k];
-		printf("own %p left-> %p data-> %d right->%p ascii-> %d\n",root,root->left,root->data,root->right,root->ascii);
-		i++;
-	}
-	k = n;
+	int k = n;
 	while(1){
 		if(k>1){
 			heapNode(sta, k);
@@ -96,15 +99,21 @@ int main(){
 			// as we are going to combine two nodes into a single node for that we will create two different nodes assign them vlaues of minimun and second minimum and then combine them into a 2nd minimum.
 			node *tmp1;
 			node *tmp2;
-			tmp1=malloc(sizeof(node*));
-			tmp2=malloc(sizeof(node*));
+			tmp1=malloc(sizeof(node));
+			tmp2=malloc(sizeof(node));
 			*tmp1=sta[k-1];
 			*tmp2=sta[k-2];
-			sta=realloc(sta,k*sizeof(node));
 			combNode(tmp1,tmp2,&sta[k-2]);
+			//node* root = &sta[k-2];
 			k--;
-			node* root = &sta[k-2];
-			printf("Main While own %p left-> %p data-> %d right->%p ascii-> %d\n",root,root->left,root->data,root->right,root->ascii);
+			//traverseTree(root);
+			if(k==9){
+				for9=tmp2;
+			}
+			
+			printf("for9: %p left-> %p data-> %d right->%p ascii-> %d\n",for9,for9->left,for9->data,for9->right,for9->ascii);
+			printf("+++++++++++++++++++++ \n");
+			//printf("Main While own %p left-> %p data-> %d right->%p ascii-> %d\n",root,root->left,root->data,root->right,root->ascii);
 		}
 		else{
 			break;

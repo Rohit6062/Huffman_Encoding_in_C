@@ -2,6 +2,15 @@
 #include<limits.h>
 #include<stdlib.h>
 #include<string.h>
+/*
+ *	THING TO DO NEXT
+ *	FING A WAY TO ARRANGE CODE AND CORRESPONDING CHARACTER INTO SOME DATA STRUCTURE SUCH THAT WE CAND FIND 
+ *		CODE AND THERE CHARACTERS IN FASTER WAY.
+ *	
+ * */
+
+
+
 typedef struct node{
 	int data;
 	struct node* right;

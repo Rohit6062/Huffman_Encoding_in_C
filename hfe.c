@@ -119,6 +119,17 @@ void psiofcd(node *root){
 psiofcd(root->left);
 psiofcd(root->right);
 }
+
+int countofbit(node* root ){
+  if(root==NULL)return 0;
+  if(root->ascii!=-1){
+  return root->data * strlen(root->code) + countofbit(root->left) + countofbit(root->right);
+  }
+  else{
+    return countofbit(root->left)+countofbit(root->right);
+  }
+}
+
 int main(){
   int map[10][2]={ {97,10},{98,101},{99,11},{100,102},{103,9},{105,10},{107,101},{106,11},{109,102},{111,7}};	
   //int map[][2]={{'l', 4238},{ 'o', 3093},{ 'r', 4847},{ 'e', 9365},{ 'm', 3846},{ ' ', 14417},{ 'i', 8416},{ 'p', 2011},{ 's', 7320},{ 'u', 7239},{ 'd', 2457},{ 't', 7017},{ 'a', 6886},{ ',', 4},{ 'c', 3381},{ 'n', 5004},{ 'g', 1199},{ 'b', 894},{ 'q', 1248},{ '.', 1939},{ 'v', 1497},{ 'f', 609},{ 'h', 447},{'\n', 264}, {'j', 46}};
@@ -163,5 +174,6 @@ int main(){
 	traverseTree(&sta[0]);       // traverseTree Again
   printf("length\n");
   psiofcd(sta);                 // print lenght of codes genrated
+  printf("bitsrequired %d \n",countofbit(sta));
 return 0;
 }

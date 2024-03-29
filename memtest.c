@@ -21,7 +21,7 @@ void pbin(int x){
   printf("%s\n",tmp);
 }
 int main(){
-  //FILE* f=fopen("test.dat","wb");
+  FILE* f=fopen("test.dat","wb");
   char c[5]="rohit";
   char encoded[155];
   int a[10][2];
@@ -35,7 +35,8 @@ int main(){
   char b[][8]={"10101","10111","111","1001","111111"};
   printf("%lu sizeof\n",sizeof(b));
   
-  int i=0,j=7,k=0;
+  int i=0,j=8,k=0;
+    
   /*while(j<sizeof(b)/sizeof(b[0])){
     k=0;
     while(k<strlen(b[i])){
@@ -46,13 +47,12 @@ int main(){
   }*/
   tmp=0;
   unsigned char tmp2=0;
-  while(i<0){
+  while(i<5){
     if(j>0 && k<strlen(b[i])){
       tmp2=b[i][k]-'0';
       printf("tmp2 = %d for a[%d][%d] -> %d\n", tmp2,i,k,b[i][k]);
       tmp=tmp|tmp2;
       pbin(tmp);
-      tmp=tmp<<1;
       pbin(tmp);
       j--;
       printf("j = %d\n", j);
@@ -69,12 +69,14 @@ int main(){
       }
       printf("\ntmp -> ");
       pbin(tmp);
-     // fwrite(&tmp,sizeof(tmp),1,f);
+      fwrite(&tmp,sizeof(tmp),1,f);
       j=8;
       tmp=0;
     }
+      tmp=tmp<<1;
   }
   //fclose(f);
+    /*
   FILE* f=fopen("test.dat","rb");
   j=7;
   tmp2=0;
@@ -122,9 +124,10 @@ int main(){
       }
       //printf("tmp2 = %d\n", tmpi2);
     }
+    */
     //printf("tmp = %d\n", tmp);
     //printf("k = %d\n", k);
-  }
+  //}
   fclose(f);
   printf("%d",strcmp("10101","10101"));
   return 0;

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+    <link href="css/style.css" rel="stylesheet">
+  </head>
+  <body>
+  {% for x in messages %}
+  <strong>Message: </strong>{{ x }}
+  {% endfor %}
+
+  <form action="login" method="post"> {% csrf_token %}
+    <input type="text" name="name" value="">Enter Your name
+    <br>
+    <input type="text" name="uname" value="">Enter your user name
+    <br>
+    <input type="password" name="pass" value=""> Enter pass word you want to set
+    <br>
+    <button type="submit">Submit</button>
+  </form>
+  </body>
+</html>

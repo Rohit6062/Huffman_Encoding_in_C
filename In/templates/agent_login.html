@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>agent_login</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='style.css'>
+    <style>
+         body {
+            background-image: url('train_image.png'); 
+            background-size: cover; 
+            background-position: center;
+        }
+
+        .bg-primary{
+            color:white;
+            background-color: #007bff;
+        }
+
+        .container {
+            width: 500px; 
+            margin: 80px; 
+            padding: 50px; 
+            border: 1px solid #ccc; 
+            border-radius: 10px; 
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .logo {
+            padding: 8px;
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo"><img src="logo_new.jpeg" alt="Logo" width="150"></div>
+    <!-- <h2 style="text-align:center; background-color:rgba(255, 255, 255, 0.7); ;">INTERCITY</h2> -->
+    <div class="container">
+        <form action="/action_page.php">
+            <div class="mb-3 mt-3">
+                <h3 class="text-center bg-primary" style="padding: 7px; border-radius: 5px; ">
+                    Agent-Login
+                </h3>
+              <label for="email" class="form-label">Email:</label><br>
+              <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
+            </div>
+            <div class="mb-3">
+              <label for="pwd" class="form-label">Password:</label><br>
+              <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="pswd">
+            </div>
+            <button type="submit" class="btn btn-primary">login</button>
+            <div class="mb-3">
+                <p>Don't have an account? <a href="user_register.html">Register</a></p>
+                
+              </div>
+
+          </form>
+    </div>
+    
+</body>
+</html>

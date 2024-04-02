@@ -4,19 +4,22 @@
 #include<stdlib.h>
 #include<string.h>
 #include<unistd.h>
+
 typedef struct node{
 	int data;
 	struct node* right;
 	struct node* left;
 	int ascii;
-  char* code;
+    char* code;
 }node;
 
 typedef struct ascicode{
     int ascii;
     char * code;
 }ascicode;
-int hgt;
+
+//int hgt;
+
 void initastmp(char* tmp,int n){
   int i=0;
   while(i<n){
@@ -24,10 +27,10 @@ void initastmp(char* tmp,int n){
     i++;
   }
 }
-void pbin(int x){
+
+void pbin(int x){    //print bytr in bimary form
   char tmp[8]="00000000";printf("x = %d\n", x);
   int i=7;
-  //x=abs(x);
   while(x>0){
     tmp[i]=x%2+'0';
     i--;
@@ -35,7 +38,8 @@ void pbin(int x){
   }
   printf("%s\n",tmp);
 }
-int mx(int a,int b){ //return maximum
+
+int mx(int a,int b){   //return maximum
   if(a>b){
     return a;
   }else{
@@ -43,17 +47,17 @@ int mx(int a,int b){ //return maximum
   }
 }
 
-int height(node* root){ // return height of the tree
+int height(node* root){   // return height of the tree
   if(root==NULL)return 0;
   return mx(1+height(root->left),1+height(root->right));
 }
 
-void allcode(node* root){  // malloc size to code in node
+void allcode(node* root , int size){  // malloc size to code in node
     if(root==NULL)return;
     if(root->ascii!=-1)
-      root->code=malloc(hgt*sizeof(char));
-    allcode(root->left);
-    allcode(root->right);
+      root->code=malloc(size*sizeof(char));
+    allcode(root->left,size);
+    allcode(root->right,size);
   }
 
 void AssignCodes(node* root,char* tmp,int i){ // generate and assigne code after huffman tree is generated
@@ -78,7 +82,7 @@ void AssignCodes(node* root,char* tmp,int i){ // generate and assigne code after
     
   }
 
-void initbst(node* root,int data,int ascii){
+void initbst(node* root,int data,int ascii){  //initialize the bst tree
 	root->left = NULL;
 	root->right = NULL;
 	root->data=data;
@@ -87,7 +91,7 @@ void initbst(node* root,int data,int ascii){
 	printf(" Initiating Bst %d %d\n",root->data,root->ascii);
 }
 
-void swapNode(node *a, node *b){
+void swapNode(node *a, node *b){  //swap node
 	node temp = *a;
 	*a = *b;
 	*b = temp;
@@ -121,28 +125,31 @@ void heapNode(node *a, int n){
 	}
 }	
 
-void combNode(node* left,node * right,node* tmp){
+void combNode(node* left,node * right,node* tmp){  // combine and create new node
 	tmp->data=left->data+right->data;
 	tmp->left=left;
 	tmp->right=right;
 	tmp->ascii=-1;
 }
-void traverseTree(node *root)
-{
+
+void traverseTree(node *root)  //traverse binary tree
+    {
 	if(root!=NULL){
 		printf(" own %p left-> %p data-> %d right->%p ascii-> %d code-> %s \n",root,root->left,root->data,root->right,root->ascii,root->code);
 		traverseTree(root->left);
 		traverseTree(root->right);
 	}
 }
+//print size of code
 void psiofcd(node *root){
-  if(root==NULL)return;
-  if(root->ascii != -1)
-		printf(" own %p left-> %p data-> %d right->%p ascii-> %d code-> %s  len-> %ld\n",root,root->left,root->data,root->right,root->ascii,root->code,strlen(root->code));
-psiofcd(root->left);
-psiofcd(root->right);
+    if(root==NULL)return;
+    if(root->ascii != -1)
+	    printf(" own %p left-> %p data-> %d right->%p ascii-> %d code-> %s  len-> %ld\n",root,root->left,root->data,root->right,root->ascii,root->code,strlen(root->code));
+    psiofcd(root->left);
+    psiofcd(root->right);
 }
 
+// count of bits required to store compressed data
 int countofbit(node* root ){
   if(root==NULL)return 0;
   if(root->ascii!=-1){
@@ -190,6 +197,7 @@ void asciiCodeSort(ascicode* a,int n){
     }
 }
 
+//search for ascii and return code
 char* searchAndReturnCode(ascicode* a,int n,int asciiToFind){
     printf("n = %d\n", asciiToFind);
     if(n<=0 && a[0].ascii != asciiToFind){
@@ -208,6 +216,9 @@ char* searchAndReturnCode(ascicode* a,int n,int asciiToFind){
         return a[mid].code;
     }
 }
+
+//search for code and return ascii according to it
+
 unsigned char searchAscii(ascicode* a, int n, char * str){
     unsigned char res = 0;//=malloc(sizeof(result));
     for(int i=0;i<n;i++){
@@ -219,22 +230,10 @@ unsigned char searchAscii(ascicode* a, int n, char * str){
     return res;
 }
 
-int main(){
-//  int map[10][2]={ {97,10},{98,101},{99,11},{100,102},{103,9},{105,10},{107,101},{106,11},{109,102},{111,7}};	
-  int map[][2]={{'l', 4238},{ 'o', 3093},{ 'r', 4847},{ 'e', 9365},{ 'm', 3846},{ ' ', 14417},{ 'i', 8416},{ 'p', 2011},{ 's', 7320},{ 'u', 7239},{ 'd', 2457},{ 't', 7017},{ 'a', 6886},{ ',', 4},{ 'c', 3381},{ 'n', 5004},{ 'g', 1199},{ 'b', 894},{ 'q', 1248},{ '.', 1939},{ 'v', 1497},{ 'f', 609},{ 'h', 447},{'\n', 264}, {'j', 46}};
-	int n=sizeof(map)/sizeof(map[0]);
-	printf("%d\n",n);
-	node* sta;
-	sta=malloc(n*sizeof(node));
-	int i=0;
 
-	// this will create node for every element in map;
-	while(i<n){
-		initbst(&sta[i],map[i][1],map[i][0]);
-		i++;
-	}
-	int k = n;
-	while(1){
+void CreateTree(node * sta, int size){ // structure array
+    int k=size;
+    while(1){
 		if(k>1){
 			heapNode(sta, k);
 			heapNode(sta,k-1);
@@ -251,44 +250,85 @@ int main(){
 		}
 		else{
 			break;
-		}
+    		}
+	    }
+    printf("Tree successfully Created!\n");
+}
+
+
+int main(int argc,char* argv){
+//  int map[10][2]={ {97,10},{98,101},{99,11},{100,102},{103,9},{105,10},{107,101},{106,11},{109,102},{111,7}};	
+  int map[][2]={{'l', 4238},{ 'o', 3093},{ 'r', 4847},{ 'e', 9365},{ 'm', 3846},{ ' ', 14417},{ 'i', 8416},{ 'p', 2011},{ 's', 7320},{ 'u', 7239},{ 'd', 2457},{ 't', 7017},{ 'a', 6886},{ ',', 4},{ 'c', 3381},{ 'n', 5004},{ 'g', 1199},{ 'b', 894},{ 'q', 1248},{ '.', 1939},{ 'v', 1497},{ 'f', 609},{ 'h', 447},{'\n', 264}, {'j', 46}};
+	int n=sizeof(map)/sizeof(map[0]);
+
+    // creating array of 
+    node* sta;
+	sta=malloc(n*sizeof(node));
+	
+    int i=0,k;
+
+	// this will create node for every element in map;
+	while(i<n){
+		initbst(&sta[i],map[i][1],map[i][0]);
+		i++;
 	}
-	printf("\n traversal Result\n");
-	//traverseTree(&sta[0]);
-    hgt=height(sta);
-    i=0;
-    allcode(sta); // allocate memory to code in struct ndoe
-    char tempStr[hgt]; 
-    AssignCodes(sta,tempStr,0);  //generate code from huffman Tree 
-    //traverseTree(&sta[0]);       // traverseTree Again
-    printf("length\n");
-    psiofcd(sta);                 // print lenght of codes genrated
-    printf("bitsrequired %d \n",countofbit(sta));
     
+    //Creating tree from above structure array
+    CreateTree(sta,n);
+
+    // calculating height of tree.
+    int hgt=height(sta);
+
+    // allocate memory to code in struct ndoe
+    allcode(sta,hgt); 
+     
+    //generate code from huffman Tree 
+    char tempStr[hgt];
+    AssignCodes(sta,tempStr,0);
+
+    //traverseTree(&sta[0]);       // traverseTree Again
+    //printf("length\n"); 
+    // print lenght of codes genrated
+    psiofcd(sta);                
+    printf("bitsrequired %d \n",countofbit(sta));
+
+    
+    // Creating code and ascii array
     node *root=sta;
     ascicode codeArray[n];
     createCodeAndAsciiArray(root,codeArray);
     printf("----------------------------------\n");
-    i=0;
     
+    // sort ascii_code array
+    i=0;
     asciiCodeSort(codeArray,n);
     while(i<n){
         printf("%d %s data of asciiArray\n",codeArray[i].ascii,codeArray[i].code);
         i++;
     }
-    i=0;
+    
     //printf("%s asciSearchFunction\n",searchAndReturnCode(codeArray,n,'a'));
-    // Test Code Starts from here. 
-
-  //  FILE* f=fopen("test.dat","wb");
-    FILE* f1=fopen("test.txt","r");
-    unsigned char tmp;
-    while(0){
-        tmp=fgetc(f1);
-        if(tmp==EOF)break;
-        printf("%c \n",tmp);
+    
+    //Test Code Starts from here.
+    /*
+    FILE* f;
+    char * FileName = malloc(sizeof(char)*20);
+    if(argc<2){
+        printf("Enter File Name You Want to Compress \n");  
+        scanf("%s",FileName);
     }
-  
+    else{ 
+        printf("You ahve entered file named as %s\n",argv[1]);
+        strcpy(fileName,argv[1]);
+    }
+    f=fopen(fileName,"r");
+    if(f==NULL){
+        printf("")
+    }
+    */
+     FILE *f1= fopen("test.txt","r");
+    //FILE* f=fopen("Compressed.dat","wb");
+    unsigned char tmp;
     // perfectly Working Compression Code 
     i=0,k=0;
     int j=8;

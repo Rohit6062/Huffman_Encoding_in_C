@@ -1,0 +1,74 @@
+aggregate btarray
+	addr t;
+	ui64 n;
+endaggregate
+
+//interface-access file
+//btarray readall() 
+//override(btarray)
+
+interface stapes
+	btarray view();
+	none append(btarray);
+	none save();
+	
+endinterface
+
+aggregate vish impl stapes
+	addr startBit;
+	ui64 capacity;
+	ui64 length;
+	btarray usData;
+	btarray asciiData;
+endaggregate
+
+build dynarraystk() for vish
+	capacity <- 50;
+	length <- 0;
+	startBit <- freezeIt(capcity,btarray);
+endbuild
+
+method none getAsciiData() for vish
+	addr tempfile;
+	accessfile ct;	
+	ct <- buildaccessfile(tempfile);
+	usData <- @ct.readall();
+	asciiData <- myformtoascii(usData);
+endmethod
+
+method btarray myformtoascii(btarray usData) for vish
+	// 11001001
+	// 10000000
+	output.n <- ( usData.len * 8 / 6); 
+	output.t <- freeze(output.n,byte);
+	ui32 bytind <- 0; // for looping inside byte
+	ui32 usind <- 0;  // looping in usData
+	byte tmpstr;  // storing from Usdata
+	byte tmpsearch;
+	ui32 tmpsearchInd <- 0;
+	byte sometmp;
+	byte andVal <- 128;
+	while(1)
+		if ( usind < usData.n && cond2 )
+			tmpstr <- valueAtwithIndex(usData,byte,usind);
+			usind <- usind + 1;
+		fi
+		if( tmpsearchInd < 6 )
+			sometmp<- band(tmpstr,andVal);
+                                      
+			tmpsearchInd <- tmpsearchInd+1;
+			andVal <- andVal / 2;	
+		fi
+		if()
+	endwhile	
+endmethod
+
+
+
+
+	
+//  101010 101011 0101
+
+// convert byte to six bits
+// create table of our ascii mapping
+// search function

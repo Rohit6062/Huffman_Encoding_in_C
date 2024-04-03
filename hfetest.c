@@ -399,40 +399,26 @@ int main(int argc,char* argv){
     while(1){
         xx=fread(&tmp,sizeof(tmp),1,f);
         if(xx<1)break;
-        //free(k);
-        //printf("-----------------------------\n");
-       // printf("tmp-> ");
-        //pbin(tmp);
         tmp4=128;
         while(1){
+		//
             tmp2= tmp & tmp4;
-            //printf("printing tmp2\n");
-            //pbin(tmp2);
             if(tmp2!=0){
                 str[i]='1';
             }
             else{
                 str[i]='0';
             }
-            //sleep(1);
-            //printf("str-> %s *************\n",str); 
-            //sleep(0.5);
             i++;
             if(searchAscii(codeArray,n,str)!=0){
                     mm=searchAscii(codeArray,n,str);
-        //            printf("\n\t--> %c <-- \n",mm);
                     fwrite(&mm,sizeof(mm),1,out);
-                    //printf("\n\n Writing in File \n\n");
                     tmp2=0;
                     initastmp(str,hgt);
                     i=0;
                     ind2=0;
-                    //tmp4=tmp4>>1;
-                    //break;
             }
             tmp4=tmp4>>1;
-         //   printf("tmp4->");
-         //   pbin(tmp4);
             if(tmp4==0){
                 break;
             }

@@ -19,47 +19,105 @@ aggregate vish impl stapes
 	ui64 capacity;
 	ui64 length;
 	btarray usData;
+	2dArray map;
 	btarray asciiData;
 endaggregate
 
 build dynarraystk() for vish
-	capacity <- 50;
-	length <- 0;
-	startBit <- freezeIt(capcity,btarray);
+	map <- enter mapping
+	getAsciiData();
+
 endbuild
 
 method none getAsciiData() for vish
 	addr tempfile;
 	accessfile ct;	
-	ct <- buildaccessfile(tempfile);
-	usData <- @ct.readall();
-	asciiData <- myformtoascii(usData);
+	ct        <- buildaccessfile(tempfile);
+	usData    <- @ct.readall();
+	asciiData <- bit6_bit8(usData);
 endmethod
 
-method btarray myformtoascii(btarray usData) for vish
-	// 11001001
-	// 10000000
-	output.n <- ( usData.len * 8 / 6); 
+method btarray bit6_bit8(btarray usData) for vish
+
+	output.n <- ( usData.n * 8 / 6); 
 	output.t <- freeze(output.n,byte);
-	ui32 bytind <- 0; // for looping inside byte
-	ui32 usind <- 0;  // looping in usData
-	byte tmpstr;  // storing from Usdata
-	byte tmpsearch;
-	ui32 tmpsearchInd <- 0;
-	byte sometmp;
-	byte andVal <- 128;
-	while(1)
-		if ( usind < usData.n && cond2 )
-			tmpstr <- valueAtwithIndex(usData,byte,usind);
-			usind <- usind + 1;
+
+	byte tmpstr;  		// storing from Usdata
+	byte bit6;
+	byte nextbit6;
+	byte bit8;
+	ui64 i;
+	ui64 j;
+	ui64 rem;
+	i<-0;
+	j<-0;
+	while(i < usData.n)
+		rem <- remn(i,3);
+		tmpstr <- valueAtWithIndex(usData.t,byte,i);
+		if(rem = 0)
+			bit6 <- band(tmpstr,252);
+			bit6 <- rshift(bit6,2);
+			bit8 <- searchascii(bit6);
+			valueAtWithIndex(output.t,byte,j) <- bit8;
+			j <- j + 1;
+			bit6 <- band(tmpstr,3);
+			bit6 <- lshift(bit6,4);
+		else if(rem = 1)
+			nextbit6 <- band(tmpstr,240);
+			nextbit6 <- rshift(bit6,2);
+			bit6 <- bor(nextbit6,bit6);
+			bit8 <- searchascii(bit6);
+			valueAtWithIndex(output.t,byte,j) <- bit8;
+			j <- j + 1;
+			bit6 <- band(tmpstr,16);
+			bit6 <- lshift(bit6,2);
+		else if(rem = 2)
+			nextbit6 <- band(tmpstr,192);
+			nextbit6 <- rshift(nextbit6,6);
+			bit6 <- bor(nextbit6,bit6);
+			bit8 <- searchascii(bit6);
+			valueAtWithIndex(output.t,byte,j) <- bit8;
+			j <- j + 1;
+			bit6 <- band(tmpstr,63);
+			bit8 <- searchascii(bit6);
+			valueAtWithIndex(output.t, byte,j) <- bit8;
+			j <- j + 1;
 		fi
-		if( tmpsearchInd < 6 )
-			sometmp<- band(tmpstr,andVal);
-                                      
-			tmpsearchInd <- tmpsearchInd+1;
-			andVal <- andVal / 2;	
+		i <- i + 1;
+	endwhile	
+endmethod
+
+
+// encodeing process asciidata to usdata
+method btarray bit8_bit6(btarray asciidata) for vish
+
+	output.n <- ( asciidata.n * 6 / 8 ); 
+	output.t <- freeze(output.n,byte);
+
+	byte tmpstr;		// storing from Usdata
+	byte bit6;
+	byte nextbit8;
+	byte bit8;
+	ui64 bytecnt;
+	ui64 i;
+	ui64 j;
+	ui64 rem;
+	i<-0;
+	j<-0;
+	while(i < asciidata.n)
+		rem <- remn(i,4);
+		tmpstr <- valueAtWithIndex(asciidata.t,byte,i);
+		bit6 <- searchbit6(tmpstr);	
+		if rem = 0
+			bit8 <- lshift(bit6,2);
+		else if rem = 1
+			nextbit8 <- rshift(bit6,4);
+			bit8 <- bor(nextbit8,bit8);
+			valueAtWithIndex(output.t,byte,j) <- bit8;
+			j <- j + 1;
+			bit 
 		fi
-		if()
+		i <- i + 1;
 	endwhile	
 endmethod
 

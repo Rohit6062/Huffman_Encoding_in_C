@@ -20,30 +20,6 @@ typedef struct ascicode{
 
 //int hgt;
 
-void print2d(int ** a, int n){
-    for(int i=0;i<n;i++){
-        printf("%d %d \n",a[i][0],a[i][1]);
-    }
-}
-
-void insert(int ** a , int* n , int d1, int d2){
-    a[*n][0]=d1;
-    a[*n][1]=d2;
-    *n=*n+1;
-}
-
-// check if given character is already found or not
-bool ifinmapUpdate( int **map, int n, int ascii){
-    for(int i=0;i<n;i++){
-        if(map[i][0]==ascii){
-            map[i][1]=map[i][1]+1;
-            return true;
-        }
-    }
-    return false;
-} 
-
-
 void initastmp(char* tmp,int n){
   int i=0;
   while(i<n){
@@ -223,6 +199,7 @@ void asciiCodeSort(ascicode* a,int n){
 
 //search for ascii and return code
 char* searchAndReturnCode(ascicode* a,int n,int asciiToFind){
+    printf("n = %d\n", asciiToFind);
     if(n<=0 && a[0].ascii != asciiToFind){
         printf("!!!!Something wrong with this ascii\n");
         exit(0);
@@ -280,25 +257,10 @@ void CreateTree(node * sta, int size){ // structure array
 
 
 int main(int argc,char* argv){
-    int **map=malloc(sizeof(int*)*100);
-    int size=100;
-    for(int i=0;i<size;i++){
-        map[i]=malloc(sizeof(int)*2);
-    }
-    int n=0;
-    FILE* ff= fopen("test.txt","r");
-    int ch;
-    while(1){
-        ch=fgetc(ff);
-        if(ch<0)break;
-        if(ifinmapUpdate(map,n,ch)==0){
-            insert(map,&n,ch,1);
-        }
-    }
-    print2d(map,n);
-    fclose(ff);
+//  int map[10][2]={ {97,10},{98,101},{99,11},{100,102},{103,9},{105,10},{107,101},{106,11},{109,102},{111,7}};	
+  int map[][2]={{'l', 4238},{ 'o', 3093},{ 'r', 4847},{ 'e', 9365},{ 'm', 3846},{ ' ', 14417},{ 'i', 8416},{ 'p', 2011},{ 's', 7320},{ 'u', 7239},{ 'd', 2457},{ 't', 7017},{ 'a', 6886},{ ',', 4},{ 'c', 3381},{ 'n', 5004},{ 'g', 1199},{ 'b', 894},{ 'q', 1248},{ '.', 1939},{ 'v', 1497},{ 'f', 609},{ 'h', 447},{'\n', 264}, {'j', 46}};
+	int n=sizeof(map)/sizeof(map[0]);
 
-//*/
     // creating array of 
     node* sta;
 	sta=malloc(n*sizeof(node));
@@ -324,7 +286,7 @@ int main(int argc,char* argv){
     char tempStr[hgt];
     AssignCodes(sta,tempStr,0);
 
-    //traverseTree(&sta[0]);       // traverseTree Again
+    traverseTree(&sta[0]);       // traverseTree Again
     //printf("length\n"); 
     // print lenght of codes genrated
     psiofcd(sta);                
@@ -365,11 +327,9 @@ int main(int argc,char* argv){
     }
     */
      FILE *f1= fopen("test.txt","r");
-    FILE* f=fopen("Compressed.dat","wb");
+    //FILE* f=fopen("Compressed.dat","wb");
     unsigned char tmp;
-
     // perfectly Working Compression Code 
-    
     i=0,k=0;
     int j=8;
     tmp=0;
@@ -381,21 +341,21 @@ int main(int argc,char* argv){
     tmp3=fgetc(f1);
     printf("\n %c \n\n",tmp3);
     strcpy(tmpcode,searchAndReturnCode(codeArray,n,tmp3));
-///*    
+    /*
     while(flag){
         if(j>0 && k<strlen(tmpcode)){
             tmp2=tmpcode[k]-'0';
-//            printf("tmp2 = %d \n", tmp2);
+            printf("tmp2 = %d \n", tmp2);
             tmp=tmp|tmp2;
-   //         pbin(tmp);
-     //       pbin(tmp);
+            pbin(tmp);
+            pbin(tmp);
             j--;
-       //     printf("j = %d\n", j);
+            printf("j = %d\n", j);
             k++;
         }
         if(k==strlen(tmpcode)){
             tmp3=fgetc(f1);
-         //   printf("character fget %c\n",tmp3);
+            printf("character fget %c\n",tmp3);
             if(tmp3==EOF)flag=0;
             else{
             strcpy(tmpcode,searchAndReturnCode(codeArray,n,tmp3));
@@ -404,13 +364,13 @@ int main(int argc,char* argv){
         }
         if(j==0 || flag==0 ){
             if(flag==0){
-        //        printf("for i = 5 tmp -> %d j->%d \n",tmp,j);
+                printf("for i = 5 tmp -> %d j->%d \n",tmp,j);
                 tmp=tmp<< j;
                 }
-          //  printf("\ntmp -> ");
-          //  pbin(tmp);
+            printf("\ntmp -> ");
+            pbin(tmp);
             fwrite(&tmp,sizeof(tmp),1,f);
-         //   printf("\n\n Writing in File \n\n");
+            printf("\n\n Writing in File \n\n");
             j=8;
             tmp=0;
         }
@@ -421,10 +381,10 @@ int main(int argc,char* argv){
   }
   fclose(f);
 
-  //*/  
-    /*
+    */
+   // /*
    // fclose(f);
-    FILE* f=fopen("Compressed.dat","rb");
+    FILE* f=fopen("test.dat","rb");
     j=7;
     tmp2=0;
     int ind=0,ind2=0; //index for string 
@@ -433,32 +393,46 @@ int main(int argc,char* argv){
     initastmp(str,hgt);
     unsigned char tmp4=128;
     printf("everything is fine till here\n");
-    FILE *out=fopen("decompress.txt","w");
+    FILE *out=fopen("decompress.txt","a");
     int xx=0;
     unsigned char mm;
     while(1){
         xx=fread(&tmp,sizeof(tmp),1,f);
         if(xx<1)break;
+        //free(k);
+        //printf("-----------------------------\n");
+       // printf("tmp-> ");
+        //pbin(tmp);
         tmp4=128;
         while(1){
-		//
             tmp2= tmp & tmp4;
+            //printf("printing tmp2\n");
+            //pbin(tmp2);
             if(tmp2!=0){
                 str[i]='1';
             }
             else{
                 str[i]='0';
             }
+            //sleep(1);
+            //printf("str-> %s *************\n",str); 
+            //sleep(0.5);
             i++;
             if(searchAscii(codeArray,n,str)!=0){
                     mm=searchAscii(codeArray,n,str);
+        //            printf("\n\t--> %c <-- \n",mm);
                     fwrite(&mm,sizeof(mm),1,out);
+                    //printf("\n\n Writing in File \n\n");
                     tmp2=0;
                     initastmp(str,hgt);
                     i=0;
                     ind2=0;
+                    //tmp4=tmp4>>1;
+                    //break;
             }
             tmp4=tmp4>>1;
+         //   printf("tmp4->");
+         //   pbin(tmp4);
             if(tmp4==0){
                 break;
             }
@@ -468,6 +442,6 @@ int main(int argc,char* argv){
   //  printf("k = %d\n", k);
   }
   fclose(f);
-*/
+//*/
     return 0;
 }

@@ -20,6 +20,30 @@ typedef struct ascicode{
 
 //int hgt;
 
+void print2d(int ** a, int n){
+    for(int i=0;i<n;i++){
+        printf("%d %d \n",a[i][0],a[i][1]);
+    }
+}
+
+void insert(int ** a , int* n , int d1, int d2){
+    a[*n][0]=d1;
+    a[*n][1]=d2;
+    *n=*n+1;
+}
+
+// check if given character is already found or not
+bool ifinmapUpdate( int **map, int n, int ascii){
+    for(int i=0;i<n;i++){
+        if(map[i][0]==ascii){
+            map[i][1]=map[i][1]+1;
+            return true;
+        }
+    }
+    return false;
+} 
+
+
 void initastmp(char* tmp,int n){
   int i=0;
   while(i<n){
@@ -64,18 +88,15 @@ void AssignCodes(node* root,char* tmp,int i){ // generate and assigne code after
     if(root==NULL)return;
     if( root->left==NULL && root->right == NULL){
 		 // printf(" own %p left-> %p data-> %d right->%p ascii-> %d code-> %s\n",root,root->left,root->data,root->right,root->ascii,root->code);
-      printf(" %s\n",tmp);
       tmp[i]=0;
       strcpy(root->code,tmp);
     }
     if(root->right){
       tmp[i]='1';
-      printf("%s\n",tmp);
       AssignCodes(root->right,tmp,i+1);
     }
     if(root->left){
       tmp[i]='0';
-      printf("%s\n",tmp);
       AssignCodes(root->left,tmp,i+1);
     }
     tmp[i]=0;
@@ -162,18 +183,18 @@ int countofbit(node* root ){
 int p=0;
 
 // creates Array of ascii and code for file compression
-void createCodeAndAsciiArray(node* root,ascicode* a){
+void createCodeAndAsciiArray(node* root,ascicode* a,int hgt){
     if(root!=NULL){
 		//printf(" own %p left-> %p data-> %d right->%p ascii-> %d code-> %s \n",root,root->left,root->data,root->right,root->ascii,root->code);
         if(root->ascii != -1){
         (a[p]).ascii=root->ascii;
-        a[p].code=malloc(sizeof(char)*8);
+        a[p].code=malloc(sizeof(char)*hgt);
         strcpy(a[p].code,root->code);
         //printf("copied successfull\n");
             p++;
         }
-		createCodeAndAsciiArray(root->left,a);
-		createCodeAndAsciiArray(root->right,a);
+		createCodeAndAsciiArray(root->left,a,hgt);
+		createCodeAndAsciiArray(root->right,a,hgt);
 	}
 }
 
@@ -199,7 +220,6 @@ void asciiCodeSort(ascicode* a,int n){
 
 //search for ascii and return code
 char* searchAndReturnCode(ascicode* a,int n,int asciiToFind){
-    printf("n = %d\n", asciiToFind);
     if(n<=0 && a[0].ascii != asciiToFind){
         printf("!!!!Something wrong with this ascii\n");
         exit(0);
@@ -255,179 +275,3 @@ void CreateTree(node * sta, int size){ // structure array
     printf("Tree successfully Created!\n");
 }
 
-
-int main(int argc,char* argv){
-//  int map[10][2]={ {97,10},{98,101},{99,11},{100,102},{103,9},{105,10},{107,101},{106,11},{109,102},{111,7}};	
-  int map[][2]={{'l', 4238},{ 'o', 3093},{ 'r', 4847},{ 'e', 9365},{ 'm', 3846},{ ' ', 14417},{ 'i', 8416},{ 'p', 2011},{ 's', 7320},{ 'u', 7239},{ 'd', 2457},{ 't', 7017},{ 'a', 6886},{ ',', 4},{ 'c', 3381},{ 'n', 5004},{ 'g', 1199},{ 'b', 894},{ 'q', 1248},{ '.', 1939},{ 'v', 1497},{ 'f', 609},{ 'h', 447},{'\n', 264}, {'j', 46}};
-	int n=sizeof(map)/sizeof(map[0]);
-
-    // creating array of 
-    node* sta;
-	sta=malloc(n*sizeof(node));
-	
-    int i=0,k;
-
-	// this will create node for every element in map;
-	while(i<n){
-		initbst(&sta[i],map[i][1],map[i][0]);
-		i++;
-	}
-    
-    //Creating tree from above structure array
-    CreateTree(sta,n);
-
-    // calculating height of tree.
-    int hgt=height(sta);
-
-    // allocate memory to code in struct ndoe
-    allcode(sta,hgt); 
-     
-    //generate code from huffman Tree 
-    char tempStr[hgt];
-    AssignCodes(sta,tempStr,0);
-
-    //traverseTree(&sta[0]);       // traverseTree Again
-    //printf("length\n"); 
-    // print lenght of codes genrated
-    psiofcd(sta);                
-    printf("bitsrequired %d \n",countofbit(sta));
-
-    
-    // Creating code and ascii array
-    node *root=sta;
-    ascicode codeArray[n];
-    createCodeAndAsciiArray(root,codeArray);
-    printf("----------------------------------\n");
-    
-    // sort ascii_code array
-    i=0;
-    asciiCodeSort(codeArray,n);
-    while(i<n){
-        printf("%d %s data of asciiArray\n",codeArray[i].ascii,codeArray[i].code);
-        i++;
-    }
-    
-    //printf("%s asciSearchFunction\n",searchAndReturnCode(codeArray,n,'a'));
-    
-    //Test Code Starts from here.
-    /*
-    FILE* f;
-    char * FileName = malloc(sizeof(char)*20);
-    if(argc<2){
-        printf("Enter File Name You Want to Compress \n");  
-        scanf("%s",FileName);
-    }
-    else{ 
-        printf("You ahve entered file named as %s\n",argv[1]);
-        strcpy(fileName,argv[1]);
-    }
-    f=fopen(fileName,"r");
-    if(f==NULL){
-        printf("")
-    }
-    */
-     FILE *f1= fopen("test.txt","r");
-    //FILE* f=fopen("Compressed.dat","wb");
-    unsigned char tmp;
-    // perfectly Working Compression Code 
-    i=0,k=0;
-    int j=8;
-    tmp=0;
-    unsigned char tmp2=0;
-    char* tmpcode;
-    tmpcode = malloc(sizeof(char)*8);
-    int flag=1;
-    int tmp3;
-    tmp3=fgetc(f1);
-    printf("\n %c \n\n",tmp3);
-    strcpy(tmpcode,searchAndReturnCode(codeArray,n,tmp3));
-    /*
-    while(flag){
-        if(j>0 && k<strlen(tmpcode)){
-            tmp2=tmpcode[k]-'0';
-            printf("tmp2 = %d \n", tmp2);
-            tmp=tmp|tmp2;
-            pbin(tmp);
-            pbin(tmp);
-            j--;
-            printf("j = %d\n", j);
-            k++;
-        }
-        if(k==strlen(tmpcode)){
-            tmp3=fgetc(f1);
-            printf("character fget %c\n",tmp3);
-            if(tmp3==EOF)flag=0;
-            else{
-            strcpy(tmpcode,searchAndReturnCode(codeArray,n,tmp3));
-            k=0;
-            }
-        }
-        if(j==0 || flag==0 ){
-            if(flag==0){
-                printf("for i = 5 tmp -> %d j->%d \n",tmp,j);
-                tmp=tmp<< j;
-                }
-            printf("\ntmp -> ");
-            pbin(tmp);
-            fwrite(&tmp,sizeof(tmp),1,f);
-            printf("\n\n Writing in File \n\n");
-            j=8;
-            tmp=0;
-        }
-        tmp=tmp<<1;
-        //int mmmmm;
-        //printf("\nYou want to go forward\n\n");
-        //scanf("%d",&mmmmm);
-  }
-  fclose(f);
-
-    */
-   // /*
-   // fclose(f);
-    FILE* f=fopen("test.dat","rb");
-    j=7;
-    tmp2=0;
-    int ind=0,ind2=0; //index for string 
-    char *str;
-    str=malloc(hgt*sizeof(char));
-    initastmp(str,hgt);
-    unsigned char tmp4=128;
-    printf("everything is fine till here\n");
-    FILE *out=fopen("decompress.txt","a");
-    int xx=0;
-    unsigned char mm;
-    while(1){
-        xx=fread(&tmp,sizeof(tmp),1,f);
-        if(xx<1)break;
-        tmp4=128;
-        while(1){
-		//
-            tmp2= tmp & tmp4;
-            if(tmp2!=0){
-                str[i]='1';
-            }
-            else{
-                str[i]='0';
-            }
-            i++;
-            if(searchAscii(codeArray,n,str)!=0){
-                    mm=searchAscii(codeArray,n,str);
-                    fwrite(&mm,sizeof(mm),1,out);
-                    tmp2=0;
-                    initastmp(str,hgt);
-                    i=0;
-                    ind2=0;
-            }
-            tmp4=tmp4>>1;
-            if(tmp4==0){
-                break;
-            }
-    //  printf("tmp2 = %d\n", tmp2);
-    }
-   // printf("tmp = %d\n", tmp);
-  //  printf("k = %d\n", k);
-  }
-  fclose(f);
-//*/
-    return 0;
-}

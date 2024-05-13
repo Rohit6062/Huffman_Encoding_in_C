@@ -1,205 +1,103 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include"huffMan.c"
-#include<stdbool.h>
-
-void strToByte(char *str,unsigned char* a,unsigned char* b){
-    printf("str-> %s\n",str);
-    *a=0;
-    *b=0;
-    int indForstr = 0;
-    unsigned char toOrr = 128;
-    bool fora=true;
-    while(indForstr < strlen(str)){
-        if((str[indForstr])=='1' && fora ){
-            *a = *a | toOrr;
-            pbin(*a);
-        }
-        else if((str[indForstr])=='1'){
-            *b = *b | toOrr;
-            pbin(*b);
-        }
-        toOrr = toOrr >> 1;
-        indForstr ++;
-        printf("indForstr-> %d\n",indForstr);
-        if(toOrr == 0 && fora){
-            fora = false;
-            toOrr = 128;
-            printf("shift\n");
-        }
-        else if(toOrr == 0){
-            return;
-        }
-    }
-}
-
-
-int main(){
-    
-    int **map=malloc(sizeof(int*)*100);
-    int size=100;
-    for(int i=0;i<size;i++){
-        map[i]=malloc(sizeof(int)*2);
-    }
+#include"huffman.c"
+int main(int argc,char* argv[])
+{ 
+    int *map=malloc(sizeof(int)*255);
+    unsigned char size=255;
     int n=0;
-    FILE* ff= fopen("test.txt","r");
+    FILE* fileToRead;
+    FILE * fileToWrite ;
+    char* strI=malloc(sizeof(char)*30);
+    char* strO=malloc(sizeof(char)*30);    
+    strcpy(strO,"compressed.dat");
+    if(argc>2){
+        strcpy(strO,argv[2]);
+        strcpy(strI,argv[1]);
+    }
+    else if(argc>1){
+        strcpy(strI,argv[1]);
+    }
+    else{
+        printf("Enter Full File Name: \n");
+        scanf("%s",strI);
+    }
+    fileToRead = fopen(strI,"r");
+    fileToWrite = fopen(strO,"wb");
+    if(fileToRead == NULL){
+        printf("Failed To Open File\n");
+        exit(0);
+    }
+    if(fileToWrite == NULL){
+        printf("Failed To Open File\n");
+        exit(0);
+    }
     int ch;
     while(1){
-        ch=fgetc(ff);
+        ch=fgetc(fileToRead);
         if(ch<0)break;
-        if(ifinmapUpdate(map,n,ch)==0){
-            insert(map,&n,ch,1);
+        map[ch]++;
+    }
+    for(int i=0;i<size;i++){
+        if(map[i]!=0){
+            n++;
         }
     }
-    print2d(map,n);
-    fclose(ff);
-
-//*/
+    fclose(fileToRead);
+    fileToRead= NULL;
     // creating array of 
     node* sta;
 	sta=malloc(n*sizeof(node));
 	
-    int i=0,k;
+    int i=0,k=0;
 
 	// this will create node for every element in map;
-	while(i<n){
-		initbst(&sta[i],map[i][1],map[i][0]);
-		i++;
-	}
-    
-    //Creating tree from above structure array
-    CreateTree(sta,n);
-
-    // calculating height of tree.
-    int hgt=height(sta);
-
-    // allocate memory to code in struct ndoe
-    allcode(sta,hgt); 
-     
-    //generate code from huffman Tree 
-    char tempStr[hgt];
-    AssignCodes(sta,tempStr,0);
-
-    //traverseTree(&sta[0]);       // traverseTree Again
-    //printf("length\n"); 
-    // print lenght of codes genrated
-    psiofcd(sta);                
-    printf("bitsrequired %d \n",countofbit(sta));
-
-    
-    // Creating code and ascii array
-    node *root=sta;
-    ascicode codeArray[n];
-    createCodeAndAsciiArray(root,codeArray,hgt);
-    printf("----------------------------------\n");
-    
-    // sort ascii_code array
-    i=0;
-    asciiCodeSort(codeArray,n);
-    while(i<n){
-        printf("%d %s data of asciiArray\n",codeArray[i].ascii,codeArray[i].code);
+    while(i<size){
+        if(map[i]!=0){
+            createNode(sta+k,i,map[i]);
+            k++;
+        }
         i++;
     }
     
-    //printf("%s asciSearchFunction\n",searchAndReturnCode(codeArray,n,'a'));
-    
-    //Test Code Starts from here.
-    /*
-    FILE* f;
-    char * FileName = malloc(sizeof(char)*20);
-    if(argc<2){
-        printf("Enter File Name You Want to Compress \n");  
-        scanf("%s",FileName);
-    }
-    else{ 
-        printf("You ahve entered file named as %s\n",argv[1]);
-        strcpy(fileName,argv[1]);
-    }
-    f=fopen(fileName,"r");
-    if(f==NULL){
-        printf("")
-    }
-    */
-    FILE* f1= fopen("test.txt","r");
-    FILE* f=fopen("Compressed.dat","wb");
-    unsigned char tmp;
-
-    // perfectly Working Compression Code 
-    
-    i=0,k=0;
-    int j=8;
-    tmp=0;
-    unsigned char tmp2=0;
-    char* tmpcode;
-    tmpcode = malloc(sizeof(char)*hgt);
-    int flag=1;
-    int tmp3;
-    unsigned char ascitmp;
-    unsigned char toput;
-    //  Putting MAP table into the file
-    toput=n;
-    fwrite(&toput,sizeof(toput),1,f);
-    toput=codeArray[0].ascii;
-    fwrite(&toput,sizeof(toput),1,f);
-    i=0;
-    // i for code array
-    // j for byte and 
-    // k for char string
-    tmp=0;
-    bool isasci = false;
-    
-    while(i<n){
-        if(isasci){
-            toput = codeArray[i].ascii;
-            fwrite(&toput,sizeof(toput),1,f);
-            pbin(toput);
-            isasci=false;
-        }
-        else{
-            strcpy(tmpcode,codeArray[i].code);
-            strToByte(tmpcode,&tmp,&toput);
-            fwrite(&tmp,sizeof(tmp),1,f);
-            fwrite(&toput,sizeof(toput),1,f);
-            pbin(tmp);
-            pbin(toput);
-            printf("\n");
-            i++;
-            isasci=true;
-        }
-    }
-    tmp3=fgetc(f1);
-    printf("\n %c \n\n",tmp3);
-    strcpy(tmpcode,searchAndReturnCode(codeArray,n,tmp3));
-    flag =1;
-    i=0;
-    k=0;
-    tmp2=0;
-    j=8;
-    while(flag){
-        if(j>0 && k<strlen(tmpcode)){
-            tmp2=tmpcode[k]-'0';
-            tmp=tmp|tmp2;
-            j--;
-            k++;
-        }
-        if(k==strlen(tmpcode)){
-            tmp3=fgetc(f1);
-            if(tmp3==EOF)flag=0;
+    //Creating tree from above structure array
+    CreateTree(sta,n);
+    asciicode* codeArray = malloc(sizeof(asciicode)*n); 
+    generateCodes(sta,codeArray,0,0);
+    asciiCodeSort(codeArray,n); 
+    fileToRead=fopen(strI,"r");
+    unsigned char wrt=n;
+    fwrite(&wrt,sizeof(wrt),1,fileToWrite);
+    storeTree(fileToWrite,sta);
+    int code=0;
+    char bytesize= 8;
+    size=0;
+    while(1){
+        ch=fgetc(fileToRead);
+        if(ch==EOF)break;
+        searchAndReturnCode(codeArray,n,(unsigned char)ch,&code,&size);
+        while(size>0){
+            if(size <= bytesize){
+                bytesize = bytesize - size;
+                wrt = (wrt << size) | ((255 >> bytesize) & (char) code);
+                size = 0;
+            }
             else{
-            strcpy(tmpcode,searchAndReturnCode(codeArray,n,tmp3));
-            k=0;
+                wrt = (wrt << bytesize) | (code >> (size - bytesize));
+                size = size - bytesize;
+                bytesize = 0;
+            }
+            if(bytesize == 0){
+                fwrite(&wrt,sizeof(wrt),1,fileToWrite);
+                wrt = 0;
+                bytesize = 8;
             }
         }
-        if(j==0 || flag==0 ){
-            if(flag==0){
-                tmp=tmp<< j;
-                }
-            fwrite(&tmp,sizeof(tmp),1,f);
-            j=8;
-            tmp=0;
-        }
-        tmp=tmp<<1;
-  }
-fclose(f);
-return 0;
+    }
+    if(bytesize != 8){
+        wrt = wrt << bytesize;
+        fwrite(&wrt,sizeof(wrt),1,fileToWrite);
+    }
+    fclose(fileToRead);
+    fclose(fileToWrite);
+    printf("Done!\n");
+    return 0;
 }

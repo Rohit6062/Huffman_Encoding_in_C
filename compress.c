@@ -1,7 +1,7 @@
 #include"huffman.c"
 int main(int argc,char* argv[])
 { 
-    int *map=malloc(sizeof(int)*255);
+    int *map=malloc(sizeof(int)*256);
     unsigned char size=255;
     int n=0;
     FILE* fileToRead;
@@ -36,11 +36,12 @@ int main(int argc,char* argv[])
         if(ch<0)break;
         map[ch]++;
     }
-    for(int i=0;i<size;i++){
+    for(int i=0;i<size+1;i++){
         if(map[i]!=0){
             n++;
         }
     }
+    //printf("working\n");
     fclose(fileToRead);
     fileToRead= NULL;
     // creating array of 
@@ -50,7 +51,7 @@ int main(int argc,char* argv[])
     int i=0,k=0;
 
 	// this will create node for every element in map;
-    while(i<size){
+    while(i<size+1){
         if(map[i]!=0){
             createNode(sta+k,i,map[i]);
             k++;
@@ -66,7 +67,15 @@ int main(int argc,char* argv[])
     fileToRead=fopen(strI,"r");
     unsigned char wrt=n;
     fwrite(&wrt,sizeof(wrt),1,fileToWrite);
-    storeTree(fileToWrite,sta);
+   // storeTree(fileToWrite,sta);
+    for(int i=0;i<n;i++){
+        wrt=codeArray[i].ascii;
+        fwrite(&wrt,sizeof(wrt),1,fileToWrite);
+        wrt=codeArray[i].size;
+        fwrite(&wrt,sizeof(wrt),1,fileToWrite);
+        k=codeArray[i].code;
+        fwrite(&k,sizeof(k),1,fileToWrite);
+    }
     int code=0;
     char bytesize= 8;
     size=0;

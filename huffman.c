@@ -37,13 +37,13 @@ int log_2(int data){
 }
 
 int mx(int a,int b){
-    return  a>b ? a : b; 
+    return  a>b ? a : b;
 }
 
-node* createNode(node* tmp,unsigned char ascii,int occurence){
-    tmp->ascii=ascii;
-    tmp->right=NULL;
-    tmp->left=NULL;
+node* createNode(node* tmp, unsigned char ascii, int occurence){
+    tmp->ascii = ascii;
+    tmp->right = NULL;
+    tmp->left  = NULL;
     tmp->occurence=occurence;
 }
 
@@ -185,7 +185,7 @@ int ind=0;
 void generateCodes(node* root,asciicode* a,int data,char size){
     if(root!=NULL){
 		//printf(" own %p left-> %p occurence-> %d right->%p ascii-> %d code-> %d \n",root,root->left,root->occurence,root->right,root->ascii,root->code);
-        if(root->ascii != 255){
+        if(root->right == NULL && root->left == NULL){
             a[ind].ascii=root->ascii;
             a[ind].code = data;
             a[ind].size=size;

@@ -28,9 +28,19 @@ int main(int argc,char* argv[]){
     }
     unsigned char n;
     fread(&n,sizeof(n),1,fileToRead);
-    node* root = extractTree(fileToRead,root);
+    //node* root = extractTree(fileToRead,root);
     asciicode* codeArray= malloc(sizeof(asciicode)*n);
-    generateCodes(root,codeArray,0,0);
+    //generateCodes(root,codeArray,0,0);
+    unsigned char get;
+    int x;
+    for(int i=0;i<n;i++){
+        fread(&get,sizeof(get),1,fileToRead);
+        codeArray[i].ascii=get;
+        fread(&get,sizeof(get),1,fileToRead);
+        codeArray[i].size=get;
+        fread(&x,sizeof(x),1,fileToRead);
+        codeArray[i].code=x;
+    }
     asciiCodeSortBySize(codeArray,n);
     int read;
     char size=0;

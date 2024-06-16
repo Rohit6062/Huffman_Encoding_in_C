@@ -23,3 +23,6 @@ By using this we unsure that the characters occures most have the smallest code.
     Example: 
             **./decompress compressed.dat decompressed.txt**
   
+
+**TIP :**
+**For testing Purpose u can create a test data file by simply running generateTestData.py file.**
